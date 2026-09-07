@@ -17,18 +17,27 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/post', uploadCloud.single('media'), async (req, res) => {
   try {
     let imageUrl = '';
+
     if (req.file) {
       imageUrl = req.file.path;
     }
 
     const bodyText = req.body.body;
 
-    res
-      .status(201)
-      .json({ message: 'Post Created Successfully', url: imageUrl });
+    const newPost = await Post.create({
+      body: bodyText,
+      media: imageUrl,
+      userId: req.body.userId || req.user?._id,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Post Created Successfully',
+      post: newPost,
+    });
   } catch (error) {
     console.error('Backend Route Error:', error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 
