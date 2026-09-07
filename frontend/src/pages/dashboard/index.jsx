@@ -51,24 +51,19 @@ export default function Dashboard() {
   }, [postState, userId]);
 
   useEffect(() => {
-    if (authState?.isTokenThere) {
-      const token =
-        typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-      if (token) {
-        dispatch(getAboutUser({ token }));
-      }
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+
+    if (token) {
+      dispatch(getAboutUser({ token }));
+
       if (!authState?.all_profiles_fetched) {
         dispatch(getAllUsers());
       }
 
       dispatch(getAllPosts());
     }
-  }, [
-    authState?.isTokenThere,
-    authState?.all_profiles_fetched,
-    dispatch,
-    userId,
-  ]);
+  }, []);
 
   useEffect(() => {
     if (!postState?.comments) return;
@@ -218,9 +213,6 @@ export default function Dashboard() {
                           }
                           className={styles.userProfile}
                           alt="User Profile"
-                          onError={(e) => {
-                            e.target.src = '/images/profile.png';
-                          }}
                         />
 
                         <div>
