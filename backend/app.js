@@ -5,6 +5,7 @@ import cors from 'cors';
 import postRoutes from './routes/post.routes.js';
 import userRoutes from './routes/user.routes.js';
 import { uploadCloud } from './config/cloudinary.js';
+import { Post } from './models/post.model.js';
 
 dotenv.config();
 
@@ -17,7 +18,6 @@ app.use(express.urlencoded({ extended: true }));
 app.post('/post', uploadCloud.single('media'), async (req, res) => {
   try {
     let imageUrl = '';
-
     if (req.file) {
       imageUrl = req.file.path;
     }
@@ -27,7 +27,7 @@ app.post('/post', uploadCloud.single('media'), async (req, res) => {
     const newPost = await Post.create({
       body: bodyText,
       media: imageUrl,
-      userId: req.body.userId || req.user?._id,
+      userId: req.body.userId || req.user?._id || '65d1a2b3c4d5e6f7a8b9c0d1',
     });
 
     res.status(201).json({
