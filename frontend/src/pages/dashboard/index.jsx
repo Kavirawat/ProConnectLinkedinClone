@@ -209,10 +209,14 @@ export default function Dashboard() {
                           src={
                             post?.userId?.profilePicture
                               ? `${BASE_URL}/${post?.userId?.profilePicture}`
-                              : '/images/profile.png'
+                              : '/images/default.jpg'
                           }
                           className={styles.userProfile}
                           alt="User Profile"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/images/default.jpg';
+                          }}
                         />
 
                         <div>
