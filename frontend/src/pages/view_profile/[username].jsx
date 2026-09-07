@@ -621,7 +621,8 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
                   <div key={index} className={styles.workHistorycard}>
                     <p
                       style={{
-                        fontWeight: '400',
+                        fontWeight: '600',
+                        fontSize: '14px',
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.8rem',
