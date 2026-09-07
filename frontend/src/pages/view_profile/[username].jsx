@@ -634,6 +634,11 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
 }
 
 export async function getServerSideProps(context) {
+  context.res.setHeader(
+    'Cache-Control',
+    'no-store, no-cache, must-revalidate, proxy-revalidate',
+  );
+
   try {
     const { username } = context.query;
     if (!username) return { props: { userProfile: null, serverAllPosts: [] } };
@@ -651,10 +656,11 @@ export async function getServerSideProps(context) {
     }
     const [profileResponse, postsResponse] = await Promise.all([
       fetch(
-        `http://127.0.0.1:${BACKEND_PORT}/get_profile_based_on_username?username=${encodeURIComponent(cleanUsername)}`,
+        `${BASE_URL}/get_profile_based_on_username?username=${encodeURIComponent(cleanUsername)}&t=${Date.now()}`,
         { method: 'GET', headers },
       ),
-      fetch(`http://127.0.0.1:${BACKEND_PORT}/get_all_users`, {
+
+      fetch(`${BASE_URL}/get_all_users?t=${Date.now()}`, {
         method: 'GET',
         headers,
       }).catch(() => null),
