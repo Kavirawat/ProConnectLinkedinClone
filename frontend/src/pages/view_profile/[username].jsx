@@ -423,23 +423,6 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
     );
   }, [normalizedProfile, targetUsername]);
 
-  if (!isMounted || !normalizedProfile) {
-    return (
-      <DashboardLayout>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '80vh',
-          }}
-        >
-          <h3>Loading Profile Dashboard Data...</h3>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
   return (
     <UserLayout>
       <DashboardLayout>
@@ -519,9 +502,7 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
                 )}
               </div>
               <div className={styles.profileContainer__right}>
-                <h3>
-                  Recent Activity ({finalDisplayPosts.length})
-                </h3>
+                <h3>Recent Activity ({finalDisplayPosts.length})</h3>
                 <div className={styles.card__profileContainer2}>
                   {finalDisplayPosts.map((post) => {
                     return (
