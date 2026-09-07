@@ -423,6 +423,23 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
     );
   }, [normalizedProfile, targetUsername]);
 
+  if (!isMounted || !normalizedProfile) {
+    return (
+      <DashboardLayout>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '80vh',
+          }}
+        >
+          <h3>Loading Profile Dashboard Data...</h3>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
   return (
     <UserLayout>
       <DashboardLayout>
@@ -471,12 +488,17 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
             <div className={styles.profileContainer}>
               <div className={styles.profileContainer__left}>
                 <div className={styles.profileContainer__leftPart}>
-                  <h2>{userProfile?.user?.name || 'User' || editName}</h2>
+                  <h2>
+                    {userProfile?.user?.name ||
+                      normalizedProfile?.user?.username ||
+                      'User' ||
+                      editName}
+                  </h2>
                 </div>
                 {targetUsername && (
                   <p
                     style={{ color: 'gray' }}
-                  >{`@${userProfile?.user?.username}`}</p>
+                  >{`@${userProfile?.user?.username || normalizedProfile?.user?.username}`}</p>
                 )}
                 <div
                   style={{
