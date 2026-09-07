@@ -31,10 +31,9 @@ export const createPost = createAsyncThunk(
       const formData = new FormData();
       formData.append('token', token);
       formData.append('body', body);
-      formData.append('media', file);
 
       if (file) {
-        formData.append('media', file); 
+        formData.append('media', file);
       }
 
       const response = await clientServer.post('/post', formData, {
@@ -50,7 +49,12 @@ export const createPost = createAsyncThunk(
         return thunkAPI.rejectWithValue('Post not uploaded');
       }
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      const errorMessage =
+        err.response?.data?.message ||
+        err.response?.data ||
+        err.message ||
+        'Server Error';
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   },
 );
