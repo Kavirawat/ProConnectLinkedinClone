@@ -49,12 +49,19 @@ app.use('/uploads', express.static('uploads'));
 const port = process.env.PORT || 9080;
 
 const start = async () => {
-  const connectDb = await mongoose.connect(process.env.mongoDb_url);
-  console.log('Database connected successfully');
-
   app.listen(port, () => {
-    console.log(`Server is starting on port ${port}`);
+    console.log(`Server is starting and listening on port ${port}`);
   });
+
+  try {
+    const connectDb = await mongoose.connect(process.env.mongoDb_url);
+    console.log('Database connected successfully');
+  } catch (dbError) {
+    console.error(
+      'Database connection failed, but server keeps running:',
+      dbError.message,
+    );
+  }
 };
 
 start();
