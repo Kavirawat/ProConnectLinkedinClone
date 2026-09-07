@@ -5,7 +5,7 @@ import cors from 'cors';
 import postRoutes from './routes/post.routes.js';
 import userRoutes from './routes/user.routes.js';
 import { uploadCloud } from './config/cloudinary.js';
-import { Post } from './models/post.model.js';
+import { Post } from './models/posts.model.js';
 
 dotenv.config();
 
