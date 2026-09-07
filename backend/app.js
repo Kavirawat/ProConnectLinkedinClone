@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import postRoutes from './routes/post.routes.js';
 import userRoutes from './routes/user.routes.js';
+import { uploadCloud } from './config/cloudinary.js';
 
 dotenv.config();
 
@@ -12,6 +13,24 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.post('/post', uploadCloud.single('media'), async (req, res) => {
+  try {
+    let imageUrl = '';
+    if (req.file) {
+      imageUrl = req.file.path;
+    }
+
+    const bodyText = req.body.body;
+
+    res
+      .status(201)
+      .json({ message: 'Post Created Successfully', url: imageUrl });
+  } catch (error) {
+    console.error('Backend Route Error:', error);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 app.use('/', postRoutes);
 app.use('/', userRoutes);

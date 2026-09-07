@@ -275,34 +275,40 @@ export const login = async (req, res) => {
 export const uploadProfilePicture = async (req, res) => {
   try {
     const token = req.body.token || req.headers.authorization?.split(' ')[1];
-    if (!token)
+    if (!token) {
       return res
         .status(401)
         .json({ success: false, message: 'Authentication token missing!' });
+    }
+
     const user = await User.findOne({ token: token });
-    if (!user)
+    if (!user) {
       return res
         .status(404)
         .json({ success: false, message: 'User not found!' });
+    }
 
     const userId = req.user?._id || req.body?.userId || user._id;
     const updateData = {};
 
     if (req.files && req.files['profile_picture']) {
-      updateData.profilePicture = req.files['profile_picture'][0].path;
+      updateData.profilePicture = req.files['profile_picture'][0].path; 
     }
+
     if (req.files && req.files['cover_picture']) {
       updateData.coverPicture = req.files['cover_picture'][0].path;
     }
 
-    if (Object.keys(updateData).length === 0)
+    if (Object.keys(updateData).length === 0) {
       return res
         .status(400)
         .json({ success: false, message: 'No file uploaded!' });
+    }
 
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
     });
+
     return res.status(200).json({
       success: true,
       message: 'Picture updated successfully!',

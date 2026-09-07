@@ -40,7 +40,7 @@ export default function DiscoverPage({ params }) {
 
                 const profileImageSrc = imagePath
                   ? `${BASE_URL}/${imagePath.replace(/\\/g, '/')}`
-                  : '/images/profile.png';
+                  : '/images/default.jpg';
 
                 if (!username) return null;
 
@@ -59,7 +59,7 @@ export default function DiscoverPage({ params }) {
                       alt={`${name}'s Profile`}
                       onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/images/profile.png';
+                        e.currentTarget.src = '/images/default.jpg';
                       }}
                     />
                     <div className={styles.userCard__details}>

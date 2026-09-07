@@ -134,13 +134,11 @@ export default function Dashboard() {
               <img
                 className={styles.userProfile}
                 src={
-                  authState?.user?.userId?.profilePicture
-                    ? `${BASE_URL}/${authState.user.userId.profilePicture}`
-                    : authState?.user?.profilePicture
-                      ? `${BASE_URL}/${authState.user.profilePicture}`
-                      : authState?.user?.user?.profilePicture
-                        ? `${BASE_URL}/${authState.user.user.profilePicture}`
-                        : '/images/default.jpg'
+                  authState?.user?.userId?.profilePicture?.startsWith('http')
+                    ? authState.user.userId.profilePicture
+                    : authState?.user?.userId?.profilePicture
+                      ? `${BASE_URL}/${authState.user.userId.profilePicture}`
+                      : '/images/default.jpg'
                 }
                 alt="Profile Picture"
               />
@@ -172,13 +170,17 @@ export default function Dashboard() {
                 </div>
               </label>
               <input
-                onChange={(e) => setFileContent(e.target.files[0])}
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    setFileContent(e.target.files[0]);
+                  }
+                }}
                 key={fileContent ? 'file-selected' : 'file-empty'}
                 type="file"
                 hidden
                 id="fileUpload"
               />
-              {postContant.length > 0 && (
+              {(postContant.trim().length > 0 || fileContent) && (
                 <div onClick={handleUpload} className={styles.uploadsButton}>
                   Post
                 </div>
@@ -207,12 +209,14 @@ export default function Dashboard() {
                       <div className={styles.singleCard__profileContainer}>
                         <img
                           src={
-                            post?.userId?.profilePicture
-                              ? `${BASE_URL}/${post?.userId?.profilePicture}`
-                              : '/images/default.jpg'
+                            post?.userId?.profilePicture?.startsWith('http')
+                              ? post.userId.profilePicture
+                              : post?.userId?.profilePicture
+                                ? `${BASE_URL}/${post?.userId?.profilePicture}`
+                                : '/images/default.jpg'
                           }
                           className={styles.userProfile}
-                          alt="User Profile"
+                          alt="Profile"
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = '/images/default.jpg';
@@ -275,7 +279,11 @@ export default function Dashboard() {
                           <div className={styles.singleCard__image}>
                             {post.media !== '' ? (
                               <img
-                                src={`${BASE_URL}/${post.media}`}
+                                src={
+                                  post.media.startsWith('http')
+                                    ? post.media
+                                    : `${BASE_URL}/${post.media}`
+                                }
                                 alt="Post Image"
                               />
                             ) : (

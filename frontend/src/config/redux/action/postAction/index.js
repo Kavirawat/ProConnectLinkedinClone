@@ -33,6 +33,10 @@ export const createPost = createAsyncThunk(
       formData.append('body', body);
       formData.append('media', file);
 
+      if (file) {
+        formData.append('media', file); 
+      }
+
       const response = await clientServer.post('/post', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',

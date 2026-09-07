@@ -14,30 +14,20 @@ import {
   acceptConnectionRequest,
   getUserProfileAndBasedOnUsername,
   cancelConnectionRequest,
-  updateBio
+  updateBio,
 } from '../controllers/user.controller.js';
-import multer from 'multer';
+import { uploadCloud } from '../config/cloudinary.js';
 
 const router = Router();
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  },
-});
-
-const upload = multer({ storage: storage });
-
 router.route('/update_profile_picture').post(
-  upload.fields([
+  uploadCloud.fields([
     { name: 'profile_picture', maxCount: 1 },
     { name: 'cover_picture', maxCount: 1 },
   ]),
   uploadProfilePicture,
 );
+
 
 router.route('/register').post(register);
 router.route('/login').post(login);
