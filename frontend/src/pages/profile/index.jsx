@@ -712,7 +712,7 @@ export default function ProfilePage({ userProfile, serverAllPosts = [] }) {
                           <div className={styles.card__profileContainer}>
                             {post.media && post.media !== '' ? (
                               <img
-                                src={`${BASE_URL}/${post.media.replace(/\\/g, '/')}`}
+                                src={post.media}
                                 alt="Post info element"
                                 onError={(e) => {
                                   e.currentTarget.style.display = 'none';
