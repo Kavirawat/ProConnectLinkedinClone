@@ -1,0 +1,105 @@
+POST http://localhost:9080/register HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "kavi",
+  "username": "kavirsingh",
+  "email": "kavi@exampl.com",
+  "password": "kavi"
+}
+
+###
+POST http://localhost:9080/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "kavi@gmail.com",
+  "password": "kavi"
+}
+
+###
+POST http://localhost:9080/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "anu@gmail.com",
+  "password": "anu"
+}
+
+###
+POST http://localhost:9080/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "tes4tr@example.com",
+  "password": "password12345"
+}
+
+###
+POST http://localhost:9080/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "testr@example.com",
+  "password": "password1234"
+}
+
+
+###
+GET http://localhost:9080/get_user_and_profile HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "caed3fac7ca40f1c03a764b05ea9451f91e7109f1992134e4958f6738b8b2d9f"
+}
+
+
+###
+POST http://localhost:9080/update_profile_data HTTP/1.1
+Content-Type: application/json
+
+{
+  "token": "588e50c29d5af10b60a7bff78805d99fc0128c428e14b538086637860909b4d1",
+  "bio": "Hey, how are you guy's",
+  "currentPost": "CTO",
+  "pastWork": [
+  {
+    "company": "google",
+    "position": "Junior Engineer",
+    "years": 2
+  }
+],
+  "education": [
+    {
+      "school": "SRITS",
+      "degree": "B.TECH",
+      "fieldOfStudy": "2022-2026"
+    }
+  ]
+}
+
+###
+
+GET http://localhost:9080/user/get_all_users
+Content-Type: application/json
+
+### Profile and Cover Picture Upload API Test
+POST http://localhost:9080/update_profile_picture HTTP/1.1
+Content-Type: multipart/form-data; boundary=boundary_string
+
+--boundary_string
+Content-Disposition: form-data; name="token"
+
+a0a8884692b62519ceba8d76a239ca77bcb022ce0fb65c74acdeb0a969ef6d51
+--boundary_string
+Content-Disposition: form-data; name="profile_picture"; filename="avatar.png"
+Content-Type: image/png
+
+< ./uploads/avatar.png
+--boundary_string
+Content-Disposition: form-data; name="cover_picture"; filename="cover.jpg"
+Content-Type: image/jpeg
+
+< ./uploads/cover.jpg
+--boundary_string--
+
