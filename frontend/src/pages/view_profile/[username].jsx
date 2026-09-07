@@ -426,7 +426,7 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
     );
   }, [normalizedProfile, targetUsername]);
 
-  if (!isMounted || !normalizedProfile) {
+  if (!isMounted || (!normalizedProfile && !userProfile?.error)) {
     return (
       <DashboardLayout>
         <div
@@ -562,8 +562,16 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
           <div className={styles.workHistory}>
             <h4>Education</h4>
             <div className={styles.workHistoryContainer}>
-              {!normalizedProfile?.profile?.education ||
-              normalizedProfile?.profile?.education?.length === 0 ? (
+              {!(
+                normalizedProfile?.profile?.education ||
+                normalizedProfile?.education ||
+                normalizedProfile?.user?.education
+              ) ||
+              (
+                normalizedProfile?.profile?.education ||
+                normalizedProfile?.education ||
+                normalizedProfile?.user?.education
+              )?.length === 0 ? (
                 <p style={{ color: 'gray', fontSize: '13px', margin: 0 }}>
                   No education details available.
                 </p>
@@ -621,7 +629,7 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
                     >
                       {work.company} - {work.position}
                     </p>
-                    <p>{work?.years}</p>
+                    <p>{work?.years} years</p>
                   </div>
                 );
               })}
