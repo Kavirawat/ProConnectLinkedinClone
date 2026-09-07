@@ -297,7 +297,11 @@ export default function ProfilePage({ userProfile, serverAllPosts = [] }) {
     ) {
       return defaultFallback;
     }
-    if (relativeSrc.startsWith('http')) return relativeSrc;
+
+    if (relativeSrc.startsWith('http')) {
+      return relativeSrc;
+    }
+
     let cleanPath = String(relativeSrc).replace(/\\/g, '/');
     if (!cleanPath.startsWith('uploads/')) {
       cleanPath = `uploads/${cleanPath}`;
