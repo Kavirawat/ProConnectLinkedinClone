@@ -78,10 +78,19 @@ export default function Dashboard() {
 
   const handleUpload = async () => {
     if (!postContant.trim() && !fileContent) return;
-    await dispatch(createPost({ file: fileContent, body: postContant }));
-    setPostContant('');
-    setFileContent(null);
-    dispatch(getAllPosts());
+
+    try {
+      await dispatch(
+        createPost({ file: fileContent, body: postContant }),
+      ).unwrap();
+
+      setPostContant('');
+      setFileContent(null);
+      dispatch(getAllPosts());
+    } catch (error) {
+      console.error('UI Upload Error:', error);
+      alert('Post creation failed! Check backend connection.');
+    }
   };
 
   const handleShare = useCallback((platform, post) => {
@@ -171,7 +180,7 @@ export default function Dashboard() {
               </label>
               <input
                 onChange={(e) => {
-                  if (e.target.files && e.target.files[0]) {
+                  if (e.target.files && e.target.files.length > 0) {
                     setFileContent(e.target.files[0]);
                   }
                 }}
