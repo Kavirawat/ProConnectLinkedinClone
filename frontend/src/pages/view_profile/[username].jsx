@@ -233,9 +233,12 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
   }, []);
 
   const normalizedProfile = useMemo(() => {
-    if (!userProfile) return null;
-    return Array.isArray(userProfile) ? userProfile : userProfile;
-  }, [userProfile]);
+    if (userProfile) return userProfile;
+
+    if (authState?.user) return authState.user;
+
+    return null;
+  }, [userProfile, authState]);
 
   const targetUsername = useMemo(() => {
     if (!router.isReady) return '';
@@ -489,8 +492,9 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
               <div className={styles.profileContainer__left}>
                 <div className={styles.profileContainer__leftPart}>
                   <h2>
-                    {userProfile?.user?.name ||
-                      normalizedProfile?.user?.username ||
+                    {normalizedProfile?.user?.name ||
+                      normalizedProfile?.name ||
+                      targetUsername ||
                       'User' ||
                       editName}
                   </h2>
@@ -498,7 +502,7 @@ export default function ViewProfilePage({ userProfile, serverAllPosts = [] }) {
                 {targetUsername && (
                   <p
                     style={{ color: 'gray' }}
-                  >{`@${userProfile?.user?.username || normalizedProfile?.user?.username}`}</p>
+                  >{`@${targetUsername || userProfile?.user?.username}`}</p>
                 )}
                 <div
                   style={{
