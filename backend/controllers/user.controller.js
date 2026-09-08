@@ -292,7 +292,7 @@ export const uploadProfilePicture = async (req, res) => {
     const updateData = {};
 
     if (req.files && req.files['profile_picture']) {
-      updateData.profilePicture = req.files['profile_picture'][0].path; 
+      updateData.profilePicture = req.files['profile_picture'][0].path;
     }
 
     if (req.files && req.files['cover_picture']) {
