@@ -23,28 +23,32 @@ export const getAllPosts = createAsyncThunk(
 export const createPost = createAsyncThunk(
   'post/createPost',
   async (userData, thunkAPI) => {
+    // 1. Dashboard se aane wale text (body) aur image (file) ko nikalenge
     const { file, body } = userData;
 
     try {
       const token = localStorage.getItem('token');
 
+      // 2. Naya FormData banayenge jo file transfer ke liye zaroori hai
       const formData = new FormData();
-      formData.append('token', token);
-      formData.append('body', body);
+      formData.append('body', body || '');
 
+      // 3. Backend uploadCloud.single('media') dhoondh raha hai, isliye key 'media' rakhenge
       if (file) {
         formData.append('media', file);
       }
 
+      // 4. API Hit
       const response = await clientServer.post('/post', formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
+          // Content-Type likhne ki zaroorat nahi hai, browser ise khud handle karega
         },
       });
 
+      // 5. Response handling
       if (response.status === 200 || response.status === 201) {
-        return thunkAPI.fulfillWithValue('Post Uploaded');
+        return response.data; // Direct data return karenge taaki .unwrap() chal sake
       } else {
         return thunkAPI.rejectWithValue('Post not uploaded');
       }

@@ -80,16 +80,24 @@ export default function Dashboard() {
     if (!postContant.trim() && !fileContent) return;
 
     try {
+      // Redux action ko plain javascript object bhej rahe hain
       await dispatch(
-        createPost({ file: fileContent, body: postContant }),
+        createPost({
+          file: fileContent,
+          body: postContant.trim(),
+        }),
       ).unwrap();
 
+      // Success hone par input box aur file clear kar denge
       setPostContant('');
       setFileContent(null);
+
+      // Timeline refresh karne ke liye posts dobara fetch karenge
       dispatch(getAllPosts());
+      alert('Post created successfully!');
     } catch (error) {
       console.error('UI Upload Error:', error);
-      alert('Post creation failed! Check backend connection.');
+      alert(`Post creation failed: ${error}`);
     }
   };
 

@@ -24,27 +24,61 @@ app.use(express.urlencoded({ extended: true }));
 
 app.post('/post', uploadCloud.single('media'), async (req, res) => {
   try {
+    console.log('--- New Post Upload Request ---');
+    console.log('File dynamic data:', req.file);
+    console.log('Body dynamic data:', req.body);
+
     let imageUrl = '';
-    if (req.file) {
+    if (req.file && req.file.path) {
       imageUrl = req.file.path;
     }
 
-    const bodyText = req.body.body;
+    // Body parser backup validation checks
+    const bodyText =
+      req.body && req.body.body ? String(req.body.body).trim() : '';
 
+    // AGAR USER NE TEXT NAHI LIKHA HAI PAR IMAGE UPLOAD KI HAI,
+    // TO SCHEMA CRASH SE BACHNE KE LIYE 'Media Post' DUMMY VALUE SET KAREIN
+    let finalBody = bodyText;
+    if (!finalBody && imageUrl) {
+      finalBody = 'Sent a media attachment';
+    }
+
+    // Agar text aur image dono missing hain toh data request block karein
+    if (!finalBody && !imageUrl) {
+      return res.status(400).json({
+        success: false,
+        message: 'Post description context or file attachment is required.',
+      });
+    }
+
+    // Safe Mongoose Object ID mapping
+    let finalUserId = req.body?.userId || req.user?._id;
+    if (!finalUserId || !mongoose.Types.ObjectId.isValid(finalUserId)) {
+      // Agar login user nahi mila toh is fallback ID par map hoga
+      finalUserId = new mongoose.Types.ObjectId('65d1a2b3c4d5e6f7a8b9c0d1');
+    }
+
+    // Creating post document directly inside MongoDB
     const newPost = await Post.create({
-      body: bodyText,
+      body: finalBody,
       media: imageUrl,
-      userId: req.body.userId || req.user?._id || '65d1a2b3c4d5e6f7a8b9c0d1',
+      userId: finalUserId,
+      fileType: req.file ? req.file.mimetype : '',
     });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: 'Post Created Successfully',
       post: newPost,
     });
   } catch (error) {
-    console.error('Backend Route Error:', error);
-    res.status(500).json({ success: false, message: error.message });
+    console.error('CRITICAL BACKEND ERROR:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Database schema processing failed',
+      error: error.message,
+    });
   }
 });
 
