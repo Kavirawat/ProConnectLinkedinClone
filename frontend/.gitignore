@@ -39,3 +39,10 @@ yarn-error.log*
 next-env.d.ts
 
 
+
+# env files
+.env
+.env*.local
+.env.production
+.env.development
+*.env
