@@ -1,0 +1,72 @@
+.container {
+  font-family: 'poppins';
+  padding: 1.2rem;
+}
+
+.mainContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+  padding-inline: 2rem;
+  height: 88vh;
+}
+
+.mainContainer_left {
+  flex: 0.5;
+}
+
+.mainContainer_right {
+  flex: 0.5;
+}
+
+.mainContainer_right >img {
+  width: 100%;
+}
+
+.mainContainer_left > p:nth-child(1) {
+  font-size: 2.9rem;
+  background: -webkit-linear-gradient(45deg, #000000, #9d9d9d);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+.mainContainer_left > p:nth-child(2) {
+  color: #4d4d4d;
+  font-size: 1.7rem;
+}
+
+.mainContainer_left > div.buttonJoin {
+  width: fit-content;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+  margin-top: 0.8rem;
+  font-size: 1.4rem;
+  background: rgb(197, 44, 208);
+  border-radius: 20px;
+  padding-inline: 1.2rem;
+  padding-block: 0.6rem;
+  color: white;
+}
+
+@media only screen and (max-width: 600px) {
+  .mainContainer {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .mainContainer_left{
+    flex: 1;
+    padding-top: 1.5rem;
+  }
+
+  .mainContainer_right{
+    flex: 1;
+  }
+
+  .mainContainer_right > img{
+    width: 100%;
+  }
+}
