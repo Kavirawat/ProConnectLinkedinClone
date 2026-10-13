@@ -8,6 +8,7 @@ import {
   incrementLike,
   getAllComments,
   postComment,
+  deleteComment,
 } from '../../config/redux/action/postAction/index.js';
 import { resetPostId } from '../../config/redux/reducer/postReduxer/index.js';
 import {
@@ -734,28 +735,124 @@ export default function Dashboard() {
 
                   return (
                     <div>
-                      {[...list].map((comment, index) => (
-                        <div
-                          className={styles.singleComment}
-                          key={comment._id || index}
-                        >
+                      {[...list].map((comment, index) => {
+                        const commentAuthorId =
+                          comment?.userId?._id || comment?.userId;
+                        const loggedInUserId =
+                          authState?.user?.profile?.userId?._id ||
+                          authState?.user?.profile?.userId ||
+                          authState?.user?._id;
+                        const loggedInUsername =
+                          authState?.user?.username ||
+                          authState?.user?.profile?.userId?.username;
+                        const commentUsername = comment?.userId?.username;
+
+                        const isCommentAuthor = Boolean(
+                          (commentAuthorId &&
+                            loggedInUserId &&
+                            String(commentAuthorId).trim() ===
+                              String(loggedInUserId).trim()) ||
+                          (loggedInUsername &&
+                            commentUsername &&
+                            loggedInUsername === commentUsername),
+                        );
+
+                        return (
                           <div
-                            className={styles.singleComment__profileContainer}
+                            className={styles.singleComment}
+                            key={comment._id || index}
                           >
-                            <div>
-                              <p
-                                style={{
-                                  forntWeight: 'bold',
-                                  fontSize: '1.2rem',
-                                }}
-                              >
-                                @{comment?.userId?.username}
-                              </p>
+                            <div
+                              className={styles.singleComment__profileContainer}
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                                width: '100%',
+                              }}
+                            >
+                              <div>
+                                <p
+                                  style={{
+                                    fontWeight: 'bold',
+                                    fontSize: '1.1rem',
+                                    cursor: 'pointer',
+                                    margin: 0,
+                                  }}
+                                  onClick={() => {
+                                    if (commentUsername) {
+                                      router.push(
+                                        `/view_profile/${commentUsername}`,
+                                      );
+                                    }
+                                  }}
+                                >
+                                  @{commentUsername}
+                                </p>
+                              </div>
+
+                              {isCommentAuthor && (
+                                <div
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    try {
+                                      await dispatch(
+                                        deleteComment({
+                                          commentId: comment._id,
+                                        }),
+                                      );
+                                      dispatch(
+                                        getAllComments({
+                                          postId: postState.postId,
+                                        }),
+                                      );
+                                    } catch (err) {
+                                      console.error(
+                                        'Error deleting comment:',
+                                        err,
+                                      );
+                                    }
+                                  }}
+                                  title="Delete comment"
+                                  style={{
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    color: '#ef4444',
+                                    padding: '2px',
+                                  }}
+                                >
+                                  <svg
+                                    style={{
+                                      height: '1.2rem',
+                                      width: '1.2rem',
+                                    }}
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                    />
+                                  </svg>
+                                </div>
+                              )}
                             </div>
+                            <p
+                              style={{
+                                margin: '4px 0 0 0',
+                                wordBreak: 'break-word',
+                              }}
+                            >
+                              {comment.body}
+                            </p>
                           </div>
-                          <p>{comment.body}</p>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   );
                 })()}

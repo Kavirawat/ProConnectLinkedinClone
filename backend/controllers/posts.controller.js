@@ -209,23 +209,46 @@ export const get_comments_By_Post = async (req, res) => {
 };
 
 export const delete_comments_of_user = async (req, res) => {
-  const { token, commet_id } = req.body;
+  let token = req.body?.token || req.query?.token || req.headers?.token;
+  if (
+    !token &&
+    req.headers?.authorization &&
+    req.headers.authorization.startsWith('Bearer ')
+  ) {
+    token = req.headers.authorization.split(' ')[1];
+  }
+
+  const comment_id =
+    req.body?.comment_id ||
+    req.body?.commet_id ||
+    req.query?.comment_id ||
+    req.query?.commet_id;
 
   try {
+    if (!token) {
+      return res.status(401).json({ message: 'Token is required' });
+    }
+
+    if (!comment_id) {
+      return res.status(400).json({ message: 'Comment ID is required' });
+    }
+
     const user = await User.findOne({ token: token }).select('_id');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const comment = await Comment.findOne({ _id: commet_id });
+    const comment = await Comment.findOne({ _id: comment_id });
 
     if (!comment) {
       return res.status(404).json({ message: 'Comment not found' });
     }
 
-    if (comment.userId.toString() != user._id.toString()) {
-      return res.status(401).json({ message: 'Unauthorized' });
+    if (comment.userId.toString() !== user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: 'Unauthorized: You can only delete your own comment' });
     }
 
     await Comment.deleteOne({ _id: comment_id });

@@ -143,7 +143,33 @@ export const postComment = createAsyncThunk(
       );
       return thunkAPI.fulfillWithValue(responce.data);
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
     }
   },
 );
+
+export const deleteComment = createAsyncThunk(
+  'post/deleteComment',
+  async (commentData, thunkAPI) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await clientServer.delete('/delete_comment', {
+        data: {
+          comment_id: commentData.commentId,
+          token: token,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          token: token,
+        },
+      });
+      return thunkAPI.fulfillWithValue({
+        ...response.data,
+        commentId: commentData.commentId,
+      });
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
+    }
+  },
+);
+
