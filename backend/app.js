@@ -9,9 +9,22 @@ dotenv.config();
 
 const app = express();
 
-  app.use(
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://proconnectlinkedinclonefrontend.onrender.com',
+  process.env.FRONTEND_URL,
+].filter(Boolean);
+
+app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: (origin, callback) => {
+      // allow requests with no origin or matching origins (render, vercel, localhost)
+      if (!origin || allowedOrigins.includes(origin) || origin.endsWith('.onrender.com') || origin.endsWith('.vercel.app')) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'token', 'postid'],
